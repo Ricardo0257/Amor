@@ -1,0 +1,125 @@
+:root{
+  --bg: radial-gradient(1200px 800px at 50% -10%, #ffd1e8 0%, transparent 60%),
+        linear-gradient(160deg,#ffe9f4 0%, #ffe0f0 40%, #fff6fb 100%);
+  --card-bg: color-mix(in oklab, white 70%, #ffd1e8 30%);
+  --text: #4a2b3b;
+  --accent: #ff5ca9;
+  --yes: #ff6bb3;
+  --no: #7a8cff;
+}
+
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+.page{
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card{
+  width: min(680px, 94vw);
+  /* Fallback background for browsers without color-mix */
+  background: rgba(255,255,255,0.82);
+  background: var(--card-bg);
+  border: 2px solid #ffd6ea;
+  border-radius: 20px;
+  padding: 28px 24px 30px;
+  box-shadow: 0 20px 50px rgba(255, 105, 180, 0.25);
+  backdrop-filter: blur(6px) saturate(1.1);
+  text-align: center;
+  position: relative;
+}
+
+.image-wrap{
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+#mainImage{
+  width: min(320px, 70vw);
+  height: auto;
+  user-select: none;
+}
+
+.question{
+  margin: 6px 0 18px;
+  font-size: clamp(22px, 3.2vw + 10px, 36px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.buttons{
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  justify-items: center;
+  min-height: 56px;
+  padding: 8px 2px;
+}
+
+.btn{
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .2s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  user-select: none;
+}
+.btn:active{ transform: scale(.98); }
+
+.btn.yes{ background: var(--yes); color: white; }
+.btn.no{ background: var(--no); color: white; will-change: transform; transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .12s ease, background .2s ease; }
+
+/* We keep the No button in normal flow and only move it with transforms (no layout shift) */
+
+/* Confetti */
+.confetti{
+  position: fixed;
+  top: -10vh;
+  will-change: transform, opacity;
+  width: var(--size, 10px);
+  height: var(--size, 10px);
+  background: var(--color, #f66);
+  transform: translate3d(var(--x, 0), var(--y, 0), 0) rotate(var(--rot, 0deg));
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 99;
+  animation: fall var(--dur, 3.2s) linear forwards, spin 1.2s linear infinite;
+}
+
+@keyframes fall{
+  0%{ transform: translate3d(var(--startX), -10vh, 0) rotate(0deg); opacity: 1; }
+  100%{ transform: translate3d(var(--endX), 110vh, 0) rotate(720deg); opacity: .9; }
+}
+@keyframes spin{
+  0%{ filter: hue-rotate(0deg); }
+  100%{ filter: hue-rotate(360deg); }
+}
+
+/* Subtle float for the image */
+@keyframes floaty{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
+.image-wrap img{ animation: floaty 3s ease-in-out infinite; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .image-wrap img, .confetti{ animation: none !important; }
+}
