@@ -1,6 +1,6 @@
 # Amor – Site fofo (HTML/CSS/JS)
 
-Um site simples e 100% estático para perguntar: “do you love me?” com dois botões (Sim/Não). O botão “Não” foge do cursor, então só dá para clicar em “Sim”. Ao clicar em “Sim”, a imagem muda, começa a cair confete pela página, e toca o áudio/frase “Yhupiiiii! me too :3” via síntese de voz do navegador.
+Um site simples e 100% estático para perguntar: “do you love me?” com dois botões (Sim/Não). O botão “Não” foge do cursor, então só dá para clicar em “Sim”. Ao clicar em “Sim”, a imagem muda, começa a cair confete pela página, e toca o som "yippee" (arquivo local) – podendo clicar várias vezes para repetir som e confete.
 
 ## Como usar
 
@@ -16,11 +16,7 @@ Um site simples e 100% estático para perguntar: “do you love me?” com dois 
   // e no clique do "Sim":
   document.getElementById('mainImage').src = 'imagens/feliz.jpg'
   ```
-- Áudio: por padrão usa `speechSynthesis` (voz do navegador). Para usar um arquivo de áudio seu, troque o bloco do `SpeechSynthesisUtterance` por:
-  ```js
-  const audio = new Audio('audio/yhupiii-me-too.mp3');
-  audio.play();
-  ```
+- Áudio: coloque seu arquivo de som na raiz como `yippee-meme-sound-effect.mp3` (já referenciado no código). Cada clique em “Sim” toca o som e dispara novos confetes. Se quiser outro nome, ajuste `SOUND_SRC` no `script.js`.
 
 ## Acessibilidade e mobile
 

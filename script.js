@@ -139,25 +139,31 @@ document.addEventListener('pointermove', onPointerMove, { passive: true });
   }, { passive: true });
 });
 
+// Audio: play the user's sound every click (allow overlap for spamming)
+const SOUND_SRC = 'yippee-meme-sound-effect.mp3';
+function playYippee(){
+  try{
+    const a = new Audio(SOUND_SRC);
+    a.volume = 1.0;
+    a.play().catch(()=>{/* ignore playback errors */});
+  }catch(_){/* ignore */}
+}
+
+let accepted = false;
 // Yes button action
 yesBtn.addEventListener('click', ()=>{
-  // Change image and question
-  imgEl.src = happyImage;
-  questionEl.textContent = 'Yhupiiiii! me too :3';
+  // First time: change image and question; subsequent clicks just celebrate again
+  if(!accepted){
+    imgEl.src = happyImage;
+    questionEl.textContent = 'Yhupiiiii! me too :3';
+    // Optional: hide the No button after acceptance
+    noBtn.style.display = 'none';
+    accepted = true;
+  }
 
-  // Celebrate 🎉
+  // Celebrate 🎉 on every click
   launchConfetti();
-
-  // Say the phrase; wrapped in try to avoid issues where synthesis isn't available
-  try{
-    const utter = new SpeechSynthesisUtterance('Yhupiii.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i.i!');
-    utter.rate = 1.05; utter.pitch = 1.1; utter.lang = 'en-US';
-    window.speechSynthesis && window.speechSynthesis.speak(utter);
-  }catch(_){ /* ignore */ }
-
-  // Disable buttons to lock the state
-  yesBtn.disabled = true;
-  noBtn.style.display = 'none';
+  playYippee();
 });
 
 // Confetti implementation (vanilla CSS + DOM)
@@ -187,9 +193,4 @@ function launchConfetti(){
   }
 }
 
-// Ensure layout has some room for the runaway button
-window.addEventListener('resize', ()=>{
-  if(noBtn.classList.contains('movable')){
-    moveNoButton();
-  }
-});
+// Cleaned: no layout repositioning handler needed anymore
