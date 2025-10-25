@@ -127,15 +127,37 @@ function onPointerMove(e){
   repelFromPoint(e.clientX, e.clientY);
 }
 
-document.addEventListener('pointermove', onPointerMove, { passive: true });
+if (window.PointerEvent) {
+  document.addEventListener('pointermove', onPointerMove, { passive: true });
+} else {
+  // Fallbacks for older browsers (no Pointer Events)
+  document.addEventListener('mousemove', function(e){
+    repelFromPoint(e.clientX, e.clientY);
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e){
+    if (e && e.touches && e.touches.length > 0) {
+      var t = e.touches[0];
+      repelFromPoint(t.clientX, t.clientY);
+    }
+  }, { passive: true });
+}
 
 // Nudge on focus/touch/press attempts as well
-['pointerdown','touchstart','mouseenter','focus'].forEach(ev => {
-  noBtn.addEventListener(ev, (e)=>{
-    const x = (e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? (state.base.left + state.base.width/2));
-    const y = (e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? (state.base.top + state.base.height/2));
+['pointerdown','touchstart','mouseenter','focus'].forEach(function(ev){
+  noBtn.addEventListener(ev, function(e){
+    var x, y;
+    if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+      x = e.clientX; y = e.clientY;
+    } else if (e && e.touches && e.touches.length > 0) {
+      x = e.touches[0].clientX; y = e.touches[0].clientY;
+    } else if (state.base) {
+      x = state.base.left + state.base.width/2;
+      y = state.base.top + state.base.height/2;
+    } else {
+      x = window.innerWidth/2; y = window.innerHeight/2;
+    }
     repelFromPoint(x, y);
-    if(ev !== 'focus') e.preventDefault();
+    // No preventDefault in passive listeners; not required here
   }, { passive: true });
 });
 
